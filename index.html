@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Composer / Producer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0605;
+    --bg-alt: #130908;
+    --red-deep: #5c0e12;
+    --red-bright: #b3121f;
+    --red-glow: #ff2d3a;
+    --cream: #e9e0d3;
+    --cream-dim: #9c9086;
+    --line: rgba(233,224,211,0.14);
+    --line-red: rgba(179,18,31,0.4);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 0%, rgba(92,14,18,0.14), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 100% 100%, rgba(92,14,18,0.10), transparent 55%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%),
+      var(--bg);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* grain texture overlay — fine layer */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    z-index:999;
+    pointer-events:none;
+    opacity:0.09;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* grain texture overlay — coarse layer for depth */
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    z-index:998;
+    pointer-events:none;
+    opacity:0.06;
+    mix-blend-mode:soft-light;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.7  0 0 0 0 0.07  0 0 0 0 0.08  0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+  }
+
+  ::selection{ background:var(--red-bright); color:var(--cream); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  h1,h2,h3{ font-family:'Bebas Neue', sans-serif; letter-spacing:0.03em; font-weight:400; }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--red-glow);
+  }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 40px;
+    backdrop-filter:blur(10px);
+    background:linear-gradient(to bottom, rgba(10,6,5,0.85), transparent);
+    transition:background 0.3s;
+  }
+  .nav-mark{
+    font-family:'Bebas Neue'; font-size:1.3rem; letter-spacing:0.08em;
+  }
+  .nav-mark span{ color:var(--red-bright); }
+  .nav-links{ display:flex; gap:36px; list-style:none; }
+  .nav-links a{
+    font-family:'Space Mono', monospace; font-size:0.7rem; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--cream-dim);
+    position:relative; padding-bottom:4px;
+  }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--red-bright); transition:width 0.25s ease;
+  }
+  .nav-links a:hover{ color:var(--cream); }
+  .nav-links a:hover::after{ width:100%; }
+  @media (max-width:720px){ .nav-links{ display:none; } }
+
+  /* ---------- NAV TOOLBAR ---------- */
+  .nav-toolbar{
+    display:flex; align-items:center;
+    gap:2px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:4px;
+    background:rgba(19,9,8,0.6);
+  }
+  .nav-toolbar button{
+    display:flex; align-items:center; gap:8px;
+    background:transparent; border:none;
+    padding:8px 14px;
+    border-radius:2px;
+    font-family:'Space Mono', monospace; font-size:0.66rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--cream-dim);
+    cursor:pointer;
+    transition:color 0.2s, background 0.2s;
+    white-space:nowrap;
+  }
+  .nav-toolbar button .arrow{
+    color:var(--red-glow);
+    font-size:0.75rem;
+    transition:transform 0.2s;
+  }
+  .nav-toolbar button:hover .arrow{ transform:translateX(2px); }
+  .nav-toolbar button:hover{ color:var(--cream); background:rgba(233,224,211,0.05); }
+  .nav-toolbar button.active{
+    color:var(--red-glow);
+    background:rgba(179,18,31,0.14);
+  }
+  .nav-toolbar .divider-v{
+    width:1px; height:16px; background:var(--line); margin:0 4px;
+  }
+  @media (max-width:720px){
+    .nav-toolbar button{ padding:9px 10px; font-size:0.6rem; gap:5px; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:120px 24px 80px;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(179,18,31,0.22), transparent 70%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+    overflow:hidden;
+  }
+  .hero::before{
+    /* scratch marks like worn album sleeve */
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 40px, rgba(233,224,211,0.02) 40px 41px),
+      repeating-linear-gradient(65deg, transparent 0 60px, rgba(179,18,31,0.03) 60px 61px);
+    pointer-events:none;
+  }
+  .hero-pulse{
+    position:absolute; width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,45,58,0.25), transparent 70%);
+    filter:blur(40px);
+    animation:pulse 4.5s ease-in-out infinite;
+    z-index:0;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); opacity:0.55; }
+    50%{ transform:scale(1.15); opacity:0.85; }
+  }
+  .hero-content{ position:relative; z-index:2; }
+  .hero .eyebrow{ display:block; margin-bottom:22px; }
+  .hero h1{
+    font-size:clamp(3.4rem, 11vw, 8.2rem);
+    line-height:0.92;
+    text-transform:uppercase;
+    color:var(--cream);
+    text-shadow:0 0 60px rgba(179,18,31,0.35);
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:transparent;
+    -webkit-text-stroke:1.5px var(--red-glow);
+  }
+  .hero-sub{
+    margin-top:26px;
+    max-width:480px;
+    font-size:1rem;
+    line-height:1.7;
+    color:var(--cream-dim);
+    font-weight:300;
+  }
+  .hero-scroll{
+    margin-top:64px;
+    font-family:'Space Mono'; font-size:0.65rem; letter-spacing:0.25em;
+    color:var(--cream-dim); text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+  }
+  .hero-scroll::after{
+    content:""; width:1px; height:44px;
+    background:linear-gradient(var(--red-bright), transparent);
+    animation:drop 2s ease-in-out infinite;
+  }
+  @keyframes drop{ 0%{opacity:0.2;} 50%{opacity:1;} 100%{opacity:0.2;} }
+
+  section{ position:relative; padding:140px 0; }
+  section::before{
+    content:"";
+    position:absolute; inset:0;
+    pointer-events:none;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 40px, rgba(233,224,211,0.015) 40px 41px),
+      repeating-linear-gradient(65deg, transparent 0 70px, rgba(179,18,31,0.02) 70px 71px);
+    z-index:0;
+  }
+  section#about{
+    background:radial-gradient(ellipse 80% 60% at 15% 20%, rgba(92,14,18,0.10), transparent 60%);
+  }
+  section#work{
+    background:
+      radial-gradient(ellipse 70% 50% at 90% 10%, rgba(92,14,18,0.12), transparent 55%),
+      linear-gradient(180deg, transparent, rgba(0,0,0,0.2));
+  }
+  section#videos{
+    background:radial-gradient(ellipse 70% 50% at 10% 90%, rgba(92,14,18,0.10), transparent 55%);
+  }
+  section#contact{
+    background:
+      radial-gradient(ellipse 80% 60% at 85% 30%, rgba(92,14,18,0.12), transparent 55%),
+      linear-gradient(180deg, rgba(0,0,0,0.15), transparent);
+  }
+  section .wrap{ position:relative; z-index:1; }
+  .divider{
+    width:100%; height:1px;
+    background:linear-gradient(90deg, transparent, var(--line-red), transparent);
+  }
+
+  .section-head{ margin-bottom:64px; }
+  .section-head h2{
+    font-size:clamp(2.4rem, 6vw, 4rem);
+    text-transform:uppercase;
+    margin-top:10px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid; grid-template-columns:0.85fr 1.15fr; gap:64px; align-items:start;
+  }
+  @media (max-width:800px){ .about-grid{ grid-template-columns:1fr; } }
+
+  .portrait{
+    aspect-ratio:4/5;
+    max-width:280px;
+    background:
+      linear-gradient(160deg, var(--red-deep) 0%, #2a0908 35%, #170807 60%, #0a0605 100%);
+    border:1px solid var(--line-red);
+    position:relative;
+    overflow:hidden;
+    box-shadow:inset 0 0 90px rgba(0,0,0,0.6);
+  }
+  .portrait::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(180deg, rgba(233,224,211,0.03) 0 2px, transparent 2px 4px),
+      repeating-linear-gradient(100deg, transparent 0 30px, rgba(233,224,211,0.025) 30px 31px),
+      repeating-linear-gradient(20deg, transparent 0 50px, rgba(255,45,58,0.02) 50px 51px);
+  }
+  .portrait::after{
+    content:"PORTRAIT";
+    position:absolute; bottom:20px; left:20px;
+    font-family:'Space Mono'; font-size:0.65rem; letter-spacing:0.2em;
+    color:var(--cream-dim); opacity:0.6;
+  }
+
+  .about-text{ padding-top:6px; }
+  .about-text p{
+    font-size:1.05rem; line-height:1.85; color:var(--cream-dim);
+    margin-bottom:22px; font-weight:300;
+  }
+  .about-text p strong{ color:var(--cream); font-weight:500; }
+  .about-quote{
+    margin-top:36px; padding-left:24px;
+    border-left:2px solid var(--red-bright);
+    font-family:'Bebas Neue'; font-size:1.5rem; letter-spacing:0.02em;
+    color:var(--cream); line-height:1.3;
+  }
+  .about-stats{
+    display:flex; gap:48px; margin-top:44px; flex-wrap:wrap;
+  }
+  .about-stats div{ font-family:'Space Mono'; }
+  .about-stats .num{ font-size:1.8rem; color:var(--red-glow); display:block; }
+  .about-stats .lbl{ font-size:0.65rem; letter-spacing:0.15em; color:var(--cream-dim); text-transform:uppercase; }
+
+  /* ---------- WORK / TRACKS ---------- */
+  .tracklist{ border-top:1px solid var(--line); }
+  .track{
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .track-row{
+    display:grid;
+    grid-template-columns:52px 1fr auto auto 40px;
+    align-items:center;
+    gap:24px;
+    padding:22px 8px;
+    position:relative;
+    z-index:2;
+    transition:background 0.25s;
+  }
+  .track:hover .track-row{
+    background:
+      repeating-linear-gradient(90deg, transparent 0 3px, rgba(255,45,58,0.025) 3px 4px),
+      rgba(179,18,31,0.07);
+  }
+  .track-num{ font-family:'Space Mono'; color:var(--cream-dim); font-size:0.85rem; }
+  .track-info h3{
+    font-family:'Inter'; font-weight:500; font-size:1.05rem; letter-spacing:0.01em;
+    color:var(--cream); text-transform:none;
+  }
+  .track-info span{
+    font-family:'Space Mono'; font-size:0.65rem; letter-spacing:0.1em;
+    color:var(--red-glow); text-transform:uppercase;
+  }
+  .track-bars{
+    display:flex; align-items:flex-end; gap:3px; height:24px;
+  }
+  .track-bars i{
+    width:3px; background:var(--cream-dim); border-radius:1px;
+    height:6px; transition:background 0.2s;
+  }
+  .track.playing .track-bars i{ background:var(--red-glow); }
+  .track.playing .track-bars i:nth-child(1){ animation:eq1 0.8s ease-in-out 0s infinite; }
+  .track.playing .track-bars i:nth-child(2){ animation:eq2 1.1s ease-in-out 0.1s infinite; }
+  .track.playing .track-bars i:nth-child(3){ animation:eq3 0.7s ease-in-out 0.25s infinite; }
+  .track.playing .track-bars i:nth-child(4){ animation:eq4 0.95s ease-in-out 0.05s infinite; }
+  /* once real audio data is available, JS drives bar heights directly frame-by-frame */
+  .track.audio-reactive .track-bars i{ animation:none !important; transition:height 0.06s linear; }
+  @keyframes eq1{
+    0%, 100%{ height:5px; } 40%{ height:24px; } 70%{ height:12px; }
+  }
+  @keyframes eq2{
+    0%, 100%{ height:8px; } 35%{ height:15px; } 65%{ height:23px; }
+  }
+  @keyframes eq3{
+    0%, 100%{ height:6px; } 50%{ height:19px; } 80%{ height:10px; }
+  }
+  @keyframes eq4{
+    0%, 100%{ height:9px; } 45%{ height:24px; } 75%{ height:14px; }
+  }
+  .track-dur{ font-family:'Space Mono'; font-size:0.8rem; color:var(--cream-dim); }
+  .play-btn{
+    width:40px; height:40px; border-radius:50%;
+    border:1px solid var(--line-red);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--cream); flex-shrink:0;
+    transition:background 0.25s, border-color 0.25s;
+  }
+  .track:hover .play-btn, .track.playing .play-btn{
+    background:var(--red-bright); border-color:var(--red-bright);
+  }
+  .play-btn svg{ width:14px; height:14px; }
+  .track.playing .icon-play{ display:none; }
+  .track:not(.playing) .icon-pause{ display:none; }
+
+  /* hover-expand panel: zooms in as a floating card instead of pushing content down */
+  .track-expand{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .track:hover .track-expand, .track:focus-within .track-expand{
+    grid-template-rows:1fr;
+  }
+  .track-expand-inner{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:26px;
+    overflow:hidden;
+    min-height:0;
+    padding:0 8px;
+    opacity:0;
+    transform:scale(0.96);
+    transform-origin:center top;
+    transition:opacity 0.45s ease, transform 0.6s cubic-bezier(0.4,0,0.2,1), padding 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .track:hover .track-expand-inner, .track:focus-within .track-expand-inner{
+    opacity:1;
+    transform:scale(1);
+    padding:6px 8px 26px;
+  }
+  @media (max-width:600px){
+    .track-expand-inner{ grid-template-columns:80px 1fr; gap:16px; }
+  }
+  .track-cover{
+    width:120px; height:120px;
+    border:1px solid var(--line-red);
+    position:relative; overflow:hidden;
+    box-shadow:inset 0 0 40px rgba(0,0,0,0.6);
+  }
+  .track-cover::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(180deg, rgba(233,224,211,0.03) 0 2px, transparent 2px 4px),
+      repeating-linear-gradient(115deg, transparent 0 18px, rgba(233,224,211,0.03) 18px 19px);
+  }
+  @media (max-width:600px){ .track-cover{ width:80px; height:80px; } }
+  .track-cover.c1{ background:linear-gradient(150deg, var(--red-deep), #1a0a09 60%, #0a0605); }
+  .track-cover.c2{ background:linear-gradient(200deg, #3a0f10, #150807 55%, #0a0605); }
+  .track-cover.c3{ background:linear-gradient(120deg, var(--red-bright), #2a0908 55%, #0a0605); }
+  .track-cover.c4{ background:linear-gradient(210deg, #4a1010, #1a0a09 55%, #0a0605); }
+  .track-details{ padding-top:2px; }
+  .track-desc{
+    font-size:0.92rem; line-height:1.65; color:var(--cream-dim);
+    max-width:520px; margin-bottom:14px;
+  }
+  .track-credits{
+    display:flex; flex-wrap:wrap; gap:8px 22px;
+  }
+  .track-credits span{
+    font-family:'Space Mono'; font-size:0.68rem; letter-spacing:0.04em;
+    color:var(--cream-dim);
+  }
+  .track-credits span b{
+    color:var(--red-glow); font-weight:400; text-transform:uppercase;
+    letter-spacing:0.1em; margin-right:6px; font-size:0.62rem;
+  }
+
+  .audio-note{
+    margin-top:20px; font-family:'Space Mono'; font-size:0.7rem;
+    color:var(--cream-dim); opacity:0.6;
+  }
+
+  .more-btn-wrap{ display:flex; justify-content:center; margin-top:56px; }
+  .more-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:16px 34px;
+    background:var(--red-bright);
+    border:none;
+    font-family:'Space Mono'; font-size:0.72rem; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--cream);
+    cursor:pointer;
+    transition:background 0.25s, gap 0.25s;
+  }
+  .more-btn:hover{
+    background:var(--red-glow);
+  }
+  .more-btn:hover .arrow{ transform:translateX(3px); }
+  .more-btn .arrow{ color:var(--cream); transition:transform 0.2s; }
+
+  /* ---------- FULL PORTFOLIO DRAWER ---------- */
+  .portfolio-backdrop{
+    position:fixed; inset:0;
+    background:rgba(5,2,2,0.7);
+    backdrop-filter:blur(3px);
+    opacity:0; visibility:hidden;
+    transition:opacity 0.4s ease, visibility 0.4s;
+    z-index:190;
+  }
+  .portfolio-backdrop.open{ opacity:1; visibility:visible; }
+
+  .portfolio-drawer{
+    position:fixed; top:0; right:0; bottom:0;
+    width:min(600px, 90vw);
+    background:var(--bg-alt);
+    border-left:1px solid var(--line-red);
+    box-shadow:-40px 0 70px rgba(0,0,0,0.6);
+    padding:100px 44px 60px;
+    overflow-y:auto;
+    transform:translateX(100%);
+    transition:transform 0.5s cubic-bezier(.16,1,.3,1);
+    z-index:200;
+  }
+  .portfolio-drawer.open{ transform:translateX(0); }
+  .portfolio-drawer h2{
+    font-size:clamp(2.2rem, 5vw, 3rem);
+    text-transform:uppercase;
+    margin-top:10px; margin-bottom:44px;
+  }
+  .portfolio-close{
+    position:absolute; top:28px; right:32px;
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line-red);
+    background:transparent; color:var(--cream);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:background 0.25s, border-color 0.25s, transform 0.25s;
+  }
+  .portfolio-close:hover{ background:var(--red-bright); border-color:var(--red-bright); transform:rotate(90deg); }
+  .portfolio-close svg{ width:16px; height:16px; }
+
+  /* ---------- TRACK DETAIL PAGE ---------- */
+  .track-detail-page{
+    position:fixed; inset:0;
+    background:var(--bg);
+    z-index:300;
+    overflow-y:auto;
+    padding:110px 8vw 80px;
+    transform:translateY(100%);
+    transition:transform 0.55s cubic-bezier(.16,1,.3,1);
+  }
+  .track-detail-page.open{ transform:translateY(0); }
+  .track-detail-back{
+    position:fixed; top:28px; left:32px;
+    display:flex; align-items:center; gap:10px;
+    padding:10px 20px 10px 14px;
+    border:1px solid var(--line-red);
+    background:rgba(10,6,5,0.7);
+    backdrop-filter:blur(6px);
+    color:var(--cream);
+    font-family:'Space Mono'; font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase;
+    cursor:pointer;
+    z-index:301;
+    transition:background 0.25s, border-color 0.25s;
+  }
+  .track-detail-back:hover{ background:var(--red-bright); border-color:var(--red-bright); }
+  .track-detail-back svg{ width:14px; height:14px; }
+  @media (max-width:600px){
+    .track-detail-page{ padding:100px 24px 60px; }
+    .track-detail-back{ top:20px; left:20px; padding:9px 16px 9px 12px; }
+  }
+
+  .track-detail-grid{
+    display:grid; grid-template-columns:280px 1fr; gap:56px; max-width:900px;
+  }
+  @media (max-width:720px){ .track-detail-grid{ grid-template-columns:1fr; gap:32px; } }
+
+  .track-detail-art{
+    aspect-ratio:1/1;
+    position:relative; overflow:hidden;
+    border:1px solid var(--line-red);
+    box-shadow:inset 0 0 50px rgba(0,0,0,0.6), 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .track-detail-art::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(180deg, rgba(233,224,211,0.03) 0 2px, transparent 2px 4px),
+      repeating-linear-gradient(115deg, transparent 0 20px, rgba(233,224,211,0.03) 20px 21px);
+  }
+  .track-detail-art.c1{ background:linear-gradient(150deg, var(--red-deep), #1a0a09 60%, #0a0605); }
+  .track-detail-art.c2{ background:linear-gradient(200deg, #3a0f10, #150807 55%, #0a0605); }
+  .track-detail-art.c3{ background:linear-gradient(120deg, var(--red-bright), #2a0908 55%, #0a0605); }
+  .track-detail-art.c4{ background:linear-gradient(210deg, #4a1010, #1a0a09 55%, #0a0605); }
+
+  .track-detail-body .eyebrow{ display:block; margin-bottom:14px; }
+  .track-detail-body h2{
+    font-size:clamp(2.2rem, 6vw, 3.6rem);
+    text-transform:none;
+    line-height:1.05;
+    margin-bottom:10px;
+  }
+  .track-detail-artist{
+    font-family:'Space Mono'; font-size:0.8rem; color:var(--cream-dim);
+    margin-bottom:28px;
+  }
+  .track-detail-desc{
+    font-size:1.02rem; line-height:1.8; color:var(--cream-dim);
+    max-width:520px; margin-bottom:30px;
+  }
+  .track-detail-credits{
+    display:flex; flex-wrap:wrap; gap:10px 30px;
+    margin-bottom:36px;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+  }
+  .track-detail-credits span{
+    font-family:'Space Mono'; font-size:0.72rem; color:var(--cream-dim);
+  }
+  .track-detail-credits span b{
+    display:block; color:var(--red-glow); font-weight:400; text-transform:uppercase;
+    letter-spacing:0.12em; font-size:0.62rem; margin-bottom:4px;
+  }
+  .track-detail-play{
+    display:inline-flex; align-items:center; gap:12px;
+    padding:15px 30px;
+    background:var(--red-bright); border:none; color:var(--cream);
+    font-family:'Space Mono'; font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase;
+    cursor:pointer;
+    transition:background 0.25s;
+  }
+  .track-detail-play:hover{ background:var(--red-glow); }
+  .track-detail-play svg{ width:14px; height:14px; }
+  .track-detail-play .td-icon-pause{ display:none; }
+  .track-detail-play.playing .td-icon-play{ display:none; }
+  .track-detail-play.playing .td-icon-pause{ display:inline-flex; }
+
+  .portfolio-list{ border-top:none; display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+  @media (max-width:480px){
+    .portfolio-list{ grid-template-columns:repeat(2, 1fr); }
+  }
+
+  .portfolio-cover{
+    aspect-ratio:1/1;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line-red);
+    cursor:pointer;
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.6);
+    transition:box-shadow 0.3s ease;
+  }
+  .portfolio-cover:hover{
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.6), 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .portfolio-cover.playing{
+    border-color:var(--red-bright);
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.6), 0 0 0 2px rgba(179,18,31,0.35);
+  }
+  .portfolio-playing-badge{
+    position:absolute; top:10px; right:10px;
+    width:28px; height:28px; border-radius:50%;
+    background:var(--red-bright);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:scale(0.75);
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:3;
+  }
+  .portfolio-cover.playing .portfolio-playing-badge{ opacity:1; transform:scale(1); }
+  .portfolio-playing-badge svg{ width:12px; height:12px; color:var(--cream); }
+  .portfolio-art{
+    position:absolute; inset:0;
+    transition:filter 0.4s ease, transform 0.4s ease;
+  }
+  .portfolio-cover:hover .portfolio-art{
+    filter:blur(5px) brightness(0.45);
+    transform:scale(1.08);
+  }
+  .portfolio-art::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(180deg, rgba(233,224,211,0.03) 0 2px, transparent 2px 4px),
+      repeating-linear-gradient(115deg, transparent 0 16px, rgba(233,224,211,0.03) 16px 17px);
+  }
+  .portfolio-art.c1{ background:linear-gradient(150deg, var(--red-deep), #1a0a09 60%, #0a0605); }
+  .portfolio-art.c2{ background:linear-gradient(200deg, #3a0f10, #150807 55%, #0a0605); }
+  .portfolio-art.c3{ background:linear-gradient(120deg, var(--red-bright), #2a0908 55%, #0a0605); }
+  .portfolio-art.c4{ background:linear-gradient(210deg, #4a1010, #1a0a09 55%, #0a0605); }
+
+  .portfolio-info{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; padding:14px; text-align:center;
+    opacity:0;
+    transition:opacity 0.35s ease;
+    z-index:2;
+    pointer-events:none;
+  }
+  .portfolio-cover:hover .portfolio-info{ opacity:1; }
+  .portfolio-info .pi-title{
+    font-family:'Inter'; font-weight:500; font-size:0.85rem;
+    color:var(--cream); line-height:1.3;
+  }
+  .portfolio-info .pi-artist{
+    font-family:'Space Mono'; font-size:0.62rem; letter-spacing:0.1em;
+    color:var(--red-glow); text-transform:uppercase;
+  }
+  @media (max-width:480px){
+    .portfolio-drawer{ padding:90px 24px 50px; }
+  }
+
+  /* ---------- VIDEOS ---------- */
+  .media-slider{
+    position:relative;
+  }
+  .media-viewport{
+    overflow-x:auto;
+    overflow-y:hidden;
+    border:1px solid var(--line);
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .media-viewport::-webkit-scrollbar{ display:none; }
+  .media-track{
+    display:flex;
+  }
+  .media-slide{
+    flex:0 0 100%;
+    min-width:0;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+  }
+  .video-card{
+    aspect-ratio:16/9;
+    background:
+      repeating-linear-gradient(110deg, transparent 0 26px, rgba(233,224,211,0.02) 26px 27px),
+      linear-gradient(150deg, #230b09, #150807 45%, var(--bg));
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .video-card .vplay{
+    width:56px; height:56px; border-radius:50%;
+    border:1px solid var(--red-bright);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 0.25s, background 0.25s;
+  }
+  .video-card:hover .vplay{ transform:scale(1.1); background:var(--red-bright); }
+  .video-card .vplay svg{ width:16px; height:16px; margin-left:2px; }
+
+  .photo-card{
+    aspect-ratio:16/9;
+    background:
+      repeating-linear-gradient(70deg, transparent 0 22px, rgba(233,224,211,0.02) 22px 23px),
+      linear-gradient(200deg, #2a0908, #170807 50%, var(--bg));
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo-card .pcam{
+    width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--line-red);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--cream-dim);
+    transition:transform 0.25s, background 0.25s, color 0.25s;
+  }
+  .photo-card:hover .pcam{ transform:scale(1.1); background:var(--red-bright); color:var(--cream); }
+  .photo-card .pcam svg{ width:18px; height:18px; }
+
+  .media-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:48px; height:48px; border-radius:50%;
+    border:1px solid var(--line-red);
+    background:rgba(10,6,5,0.75);
+    backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--cream); cursor:pointer; z-index:5;
+    transition:background 0.25s, border-color 0.25s;
+  }
+  .media-arrow:hover{ background:var(--red-bright); border-color:var(--red-bright); }
+  .media-arrow svg{ width:18px; height:18px; }
+  .media-arrow.prev{ left:16px; }
+  .media-arrow.next{ right:16px; }
+  @media (max-width:600px){
+    .media-arrow{ width:38px; height:38px; }
+    .media-arrow.prev{ left:8px; } .media-arrow.next{ right:8px; }
+  }
+
+  .media-dots{
+    display:flex; justify-content:center; gap:10px; margin-top:24px;
+  }
+  .media-dots button{
+    width:8px; height:8px; border-radius:50%;
+    border:1px solid var(--line-red); background:transparent;
+    padding:0; cursor:pointer;
+    transition:background 0.25s, width 0.25s;
+  }
+  .media-dots button.active{ background:var(--red-bright); width:22px; border-radius:4px; }
+
+  .video-label{
+    position:absolute; bottom:16px; left:16px;
+    font-family:'Space Mono'; font-size:0.68rem; letter-spacing:0.1em;
+    color:var(--cream-dim); text-transform:uppercase;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{
+    display:grid; grid-template-columns:1fr 1.3fr; gap:64px;
+  }
+  @media (max-width:800px){ .contact-grid{ grid-template-columns:1fr; } }
+  .contact-info p{
+    color:var(--cream-dim); line-height:1.8; margin-bottom:28px; font-size:1rem;
+  }
+  .contact-links{ display:flex; flex-direction:column; gap:14px; }
+  .contact-links a{
+    font-family:'Space Mono'; font-size:0.85rem; color:var(--cream);
+    border-bottom:1px solid var(--line); padding-bottom:10px;
+    display:flex; justify-content:space-between; transition:color 0.2s;
+  }
+  .contact-links a:hover{ color:var(--red-glow); }
+
+  form{ display:flex; flex-direction:column; gap:22px; }
+  .field{ position:relative; }
+  .field label{
+    display:block; font-family:'Space Mono'; font-size:0.65rem;
+    letter-spacing:0.18em; text-transform:uppercase; color:var(--cream-dim);
+    margin-bottom:10px;
+  }
+  .field input, .field textarea{
+    width:100%; background:transparent; border:none; border-bottom:1px solid var(--line);
+    color:var(--cream); font-family:'Inter'; font-size:1rem; padding:8px 2px;
+    outline:none; transition:border-color 0.25s; resize:none;
+  }
+  .field input:focus, .field textarea:focus{ border-color:var(--red-bright); }
+  .field textarea{ min-height:100px; }
+  .submit-btn{
+    align-self:flex-start;
+    margin-top:12px;
+    padding:15px 36px;
+    background:var(--red-bright);
+    border:none; color:var(--cream);
+    font-family:'Space Mono'; font-size:0.75rem; letter-spacing:0.18em; text-transform:uppercase;
+    cursor:pointer;
+    transition:background 0.25s, transform 0.15s;
+  }
+  .submit-btn:hover{ background:var(--red-glow); }
+  .submit-btn:active{ transform:scale(0.98); }
+  .form-msg{
+    font-family:'Space Mono'; font-size:0.75rem; color:var(--red-glow);
+    margin-top:6px; min-height:1em;
+  }
+
+  footer{
+    padding:48px 0 40px;
+    text-align:center;
+  }
+  .footer-mark{ font-family:'Bebas Neue'; font-size:1.1rem; letter-spacing:0.1em; color:var(--cream-dim); }
+  .footer-mark span{ color:var(--red-bright); }
+  .footer-year{
+    font-family:'Space Mono'; font-size:0.65rem; color:var(--cream-dim);
+    opacity:0.5; margin-top:10px;
+  }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  :focus-visible{ outline:2px solid var(--red-glow); outline-offset:3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-mark">MIGUEL<span>ANDRI</span></div>
+  <div class="nav-toolbar" id="navToolbar" role="toolbar" aria-label="Jump to section">
+    <button data-target="about"><span class="arrow">→</span>About</button>
+    <button data-target="work"><span class="arrow">→</span>Work</button>
+    <button data-target="videos"><span class="arrow">→</span>Media</button>
+    <div class="divider-v"></div>
+    <button data-target="contact"><span class="arrow">→</span>Contact</button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-pulse"></div>
+  <div class="hero-content">
+    <span class="eyebrow">Producer — Mixing Engineer</span>
+    <h1>MIGUEL<br><em>ANDRI</em></h1>
+    <p class="hero-sub">Scores, soundscapes and productions built from tension and restraint — where silence carries as much weight as sound.</p>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</header>
+
+<div class="divider"></div>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">01 — About</span>
+      <h2>The Work Behind It</h2>
+    </div>
+    <div class="about-grid">
+      <div class="portrait reveal"></div>
+      <div class="about-text reveal">
+        <p>I write and produce music that sits in the space between orchestral tension and electronic weight — <strong>scores for film, records for artists, and sound design for spaces that need an atmosphere of their own.</strong></p>
+        <p>My process starts with texture before melody: a distorted string, a room tone, a broken loop. Everything else is built around what that first sound demands.</p>
+        <div class="about-quote">"Make the silence do half the work."</div>
+        <div class="about-stats">
+          <div><span class="num">40+</span><span class="lbl">Productions</span></div>
+          <div><span class="num">12</span><span class="lbl">Film Scores</span></div>
+          <div><span class="num">8yr</span><span class="lbl">In Practice</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ WORK / TRACKS ============ -->
+<section id="work">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">02 — Selected Work</span>
+      <h2>Tracklist</h2>
+    </div>
+
+    <div class="tracklist reveal">
+      <!-- Each .track has an <audio> tag with an empty src — replace src="" with your actual mp3 file path/URL to make playback real. -->
+      <div class="track" data-audio-src="">
+        <div class="track-row">
+          <span class="track-num">01</span>
+          <div class="track-info">
+            <h3>Static Bloom</h3>
+            <span>Original Score</span>
+          </div>
+          <div class="track-bars"><i></i><i></i><i></i><i></i></div>
+          <span class="track-dur">3:42</span>
+          <div class="play-btn">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </div>
+        </div>
+        <div class="track-expand">
+          <div class="track-expand-inner">
+            <div class="track-cover c1"></div>
+          <div class="track-details">
+            <p class="track-desc">Built around a detuned piano loop recorded through a broken tape deck, layered with swelling string samples and a slow-building low end. Written for a scene about growth found in decay.</p>
+            <div class="track-credits">
+              <span><b>Produced by</b>Miguel Andri</span>
+              <span><b>Mixed by</b>Miguel Andri</span>
+              <span><b>Mastered by</b>Lior Vance</span>
+            </div>
+          </div>
+          </div>
+        </div>
+        <audio src=""></audio>
+      </div>
+
+      <div class="track" data-audio-src="">
+        <div class="track-row">
+          <span class="track-num">02</span>
+          <div class="track-info">
+            <h3>Low Tide, No Light</h3>
+            <span>Ambient / Sound Design</span>
+          </div>
+          <div class="track-bars"><i></i><i></i><i></i><i></i></div>
+          <span class="track-dur">5:18</span>
+          <div class="play-btn">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </div>
+        </div>
+        <div class="track-expand">
+          <div class="track-expand-inner">
+            <div class="track-cover c2"></div>
+          <div class="track-details">
+            <p class="track-desc">Field recordings from an empty parking garage, stretched and pitched down, paired with a single sustained cello note. Made to sit underneath dialogue without ever announcing itself.</p>
+            <div class="track-credits">
+              <span><b>Produced by</b>Miguel Andri</span>
+              <span><b>Sound Design by</b>Miguel Andri</span>
+              <span><b>Mastered by</b>Lior Vance</span>
+            </div>
+          </div>
+          </div>
+        </div>
+        <audio src=""></audio>
+      </div>
+
+      <div class="track" data-audio-src="">
+        <div class="track-row">
+          <span class="track-num">03</span>
+          <div class="track-info">
+            <h3>Rust &amp; Repeat</h3>
+            <span>Production — feat. Marlow</span>
+          </div>
+          <div class="track-bars"><i></i><i></i><i></i><i></i></div>
+          <span class="track-dur">2:57</span>
+          <div class="play-btn">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </div>
+        </div>
+        <div class="track-expand">
+          <div class="track-expand-inner">
+            <div class="track-cover c3"></div>
+          <div class="track-details">
+            <p class="track-desc">A collaboration built from a single vocal take, chopped and re-pitched until the words blur into texture. The drums were recorded on a kit found in a storage unit.</p>
+            <div class="track-credits">
+              <span><b>Produced &amp; Mixed by</b>Miguel Andri</span>
+              <span><b>Vocals by</b>Marlow</span>
+              <span><b>Mastered by</b>Lior Vance</span>
+            </div>
+          </div>
+          </div>
+        </div>
+        <audio src=""></audio>
+      </div>
+
+      <div class="track" data-audio-src="">
+        <div class="track-row">
+          <span class="track-num">04</span>
+          <div class="track-info">
+            <h3>Fault Lines (Reprise)</h3>
+            <span>Original Score</span>
+          </div>
+          <div class="track-bars"><i></i><i></i><i></i><i></i></div>
+          <span class="track-dur">4:05</span>
+          <div class="play-btn">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </div>
+        </div>
+        <div class="track-expand">
+          <div class="track-expand-inner">
+            <div class="track-cover c4"></div>
+          <div class="track-details">
+            <p class="track-desc">A stripped-back return to the score's central theme, this time on solo piano with the tape hiss left intentionally in the mix. Recorded in a single take, no punch-ins.</p>
+            <div class="track-credits">
+              <span><b>Produced by</b>Miguel Andri</span>
+              <span><b>Mixed by</b>Miguel Andri</span>
+              <span><b>Mastered by</b>Lior Vance</span>
+            </div>
+          </div>
+          </div>
+        </div>
+        <audio src=""></audio>
+      </div>
+    </div>
+    <p class="audio-note">Click a track to preview. Hover to see the cover art, notes, and credits. Add your own audio by setting the src="" attribute on each &lt;audio&gt; tag.</p>
+    <div class="more-btn-wrap">
+      <button type="button" class="more-btn" id="openPortfolioBtn">More <span class="arrow">→</span></button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ FULL PORTFOLIO (slide-in overlay) ============ -->
+<div class="portfolio-backdrop" id="portfolioBackdrop"></div>
+<aside class="portfolio-drawer" id="portfolioDrawer" aria-label="Full portfolio" aria-hidden="true">
+  <button type="button" class="portfolio-close" id="closePortfolioBtn" aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <span class="eyebrow">03 — Complete Catalog</span>
+  <h2>Full Portfolio</h2>
+  <div class="portfolio-list" id="portfolioList">
+      <div class="portfolio-cover" data-title="Static Bloom" data-artist="Miguel Andri" data-tag="Original Score" data-dur="3:42" data-desc="Built around a detuned piano loop recorded through a broken tape deck, layered with swelling string samples and a slow-building low end. Written for a scene about growth found in decay." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c1"><div class="portfolio-art c1"></div><div class="portfolio-info"><span class="pi-title">Static Bloom</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Low Tide, No Light" data-artist="Miguel Andri" data-tag="Ambient / Sound Design" data-dur="5:18" data-desc="Field recordings from an empty parking garage, stretched and pitched down, paired with a single sustained cello note. Made to sit underneath dialogue without ever announcing itself." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c2"><div class="portfolio-art c2"></div><div class="portfolio-info"><span class="pi-title">Low Tide, No Light</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Rust &amp; Repeat" data-artist="Miguel Andri feat. Marlow" data-tag="Production" data-dur="2:57" data-desc="A collaboration built from a single vocal take, chopped and re-pitched until the words blur into texture. The drums were recorded on a kit found in a storage unit." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c3"><div class="portfolio-art c3"></div><div class="portfolio-info"><span class="pi-title">Rust &amp; Repeat</span><span class="pi-artist">Miguel Andri feat. Marlow</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Fault Lines (Reprise)" data-artist="Miguel Andri" data-tag="Original Score" data-dur="4:05" data-desc="A stripped-back return to the score's central theme, this time on solo piano with the tape hiss left intentionally in the mix. Recorded in a single take, no punch-ins." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c4"><div class="portfolio-art c4"></div><div class="portfolio-info"><span class="pi-title">Fault Lines (Reprise)</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Ash &amp; Antenna" data-artist="Miguel Andri" data-tag="Original Score" data-dur="3:11" data-desc="A quiet cue built around a single sustained synth pad and a distant radio signal sample, meant to sit just under the edge of hearing." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c1"><div class="portfolio-art c1"></div><div class="portfolio-info"><span class="pi-title">Ash &amp; Antenna</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Nightbus, Empty" data-artist="Miguel Andri" data-tag="Ambient" data-dur="4:47" data-desc="Recorded the sound of an idling bus engine and slowed it down until it became a drone, then layered faint window-rain textures on top." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c2"><div class="portfolio-art c2"></div><div class="portfolio-info"><span class="pi-title">Nightbus, Empty</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Cold Frame" data-artist="Miguel Andri" data-tag="Production" data-dur="2:38" data-desc="A tight, minimal beat built from a single sampled door hinge and a warm sub bass, made for a scene about waiting." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c3"><div class="portfolio-art c3"></div><div class="portfolio-info"><span class="pi-title">Cold Frame</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Undertow" data-artist="Miguel Andri" data-tag="Original Score" data-dur="5:02" data-desc="Layers of bowed double bass pulled underwater with heavy modulation, building to a swell that never fully resolves." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c4"><div class="portfolio-art c4"></div><div class="portfolio-info"><span class="pi-title">Undertow</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Salt Circuit" data-artist="Miguel Andri feat. Marlow" data-tag="Production" data-dur="3:29" data-desc="A collaborative track built around a broken synth arpeggio and a vocal hook recorded in one afternoon." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c1"><div class="portfolio-art c1"></div><div class="portfolio-info"><span class="pi-title">Salt Circuit</span><span class="pi-artist">Miguel Andri feat. Marlow</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Everything, Slower" data-artist="Miguel Andri" data-tag="Ambient / Sound Design" data-dur="6:14" data-desc="A long-form ambient piece stretched from a two-second guitar sample, designed to sit in the background of a room for hours." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c2"><div class="portfolio-art c2"></div><div class="portfolio-info"><span class="pi-title">Everything, Slower</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Fracture Study No. 2" data-artist="Miguel Andri" data-tag="Original Score" data-dur="2:52" data-desc="The second in a series of short piano studies exploring the same four notes from different emotional angles." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c3"><div class="portfolio-art c3"></div><div class="portfolio-info"><span class="pi-title">Fracture Study No. 2</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Amber, Held" data-artist="Miguel Andri" data-tag="Production" data-dur="3:56" data-desc="Warm analog synths layered over a laid-back drum loop, built slowly over a single late-night session." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c4"><div class="portfolio-art c4"></div><div class="portfolio-info"><span class="pi-title">Amber, Held</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Voicemail, Deleted" data-artist="Miguel Andri" data-tag="Sound Design" data-dur="1:47" data-desc="A short sound design piece built entirely from processed answering-machine tones and static." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c1"><div class="portfolio-art c1"></div><div class="portfolio-info"><span class="pi-title">Voicemail, Deleted</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Last Light, Reprise" data-artist="Miguel Andri" data-tag="Original Score" data-dur="4:20" data-desc="A closing reprise of the score's opening theme, rebuilt with a fuller string arrangement for the final scene." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c2"><div class="portfolio-art c2"></div><div class="portfolio-info"><span class="pi-title">Last Light, Reprise</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Concrete Bloom" data-artist="Miguel Andri" data-tag="Original Score" data-dur="3:34" data-desc="A cue about growth in unlikely places, built from processed guitar harmonics and a slow string swell." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c3"><div class="portfolio-art c3"></div><div class="portfolio-info"><span class="pi-title">Concrete Bloom</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Halflight" data-artist="Miguel Andri feat. Marlow" data-tag="Production" data-dur="4:02" data-desc="A late-night collaboration built around a looping guitar figure and a hushed vocal performance." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c4"><div class="portfolio-art c4"></div><div class="portfolio-info"><span class="pi-title">Halflight</span><span class="pi-artist">Miguel Andri feat. Marlow</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Empty Frequencies" data-artist="Miguel Andri" data-tag="Ambient / Sound Design" data-dur="5:41" data-desc="An exploration of dead air and radio static, built from recordings made between stations on an old AM tuner." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c1"><div class="portfolio-art c1"></div><div class="portfolio-info"><span class="pi-title">Empty Frequencies</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Wire &amp; Bone" data-artist="Miguel Andri" data-tag="Original Score" data-dur="2:59" data-desc="A tense, minimal cue built from plucked piano strings and a single sustained low drone." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c2"><div class="portfolio-art c2"></div><div class="portfolio-info"><span class="pi-title">Wire &amp; Bone</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+      <div class="portfolio-cover" data-title="Afterimage" data-artist="Miguel Andri" data-tag="Production" data-dur="3:47" data-desc="A hazy, reverb-heavy production built to feel like a memory fading at the edges." data-produced="Miguel Andri" data-mixed="Miguel Andri" data-mastered="Lior Vance" data-art="c3"><div class="portfolio-art c3"></div><div class="portfolio-info"><span class="pi-title">Afterimage</span><span class="pi-artist">Miguel Andri</span></div><div class="portfolio-playing-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></div><audio src=""></audio></div>
+  </div>
+</aside>
+
+<!-- ============ TRACK DETAIL PAGE (opened from a portfolio square) ============ -->
+<div class="track-detail-page" id="trackDetailPage" aria-hidden="true">
+  <button type="button" class="track-detail-back" id="trackDetailBack">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    Back
+  </button>
+  <div class="track-detail-grid">
+    <div class="track-detail-art" id="trackDetailArt"></div>
+    <div class="track-detail-body">
+      <span class="eyebrow" id="trackDetailTag"></span>
+      <h2 id="trackDetailTitle"></h2>
+      <div class="track-detail-artist" id="trackDetailArtist"></div>
+      <p class="track-detail-desc" id="trackDetailDesc"></p>
+      <div class="track-detail-credits">
+        <span><b>Produced by</b><span id="trackDetailProduced"></span></span>
+        <span><b>Mixed by</b><span id="trackDetailMixed"></span></span>
+        <span><b>Mastered by</b><span id="trackDetailMastered"></span></span>
+        <span><b>Duration</b><span id="trackDetailDur"></span></span>
+      </div>
+      <button type="button" class="track-detail-play" id="trackDetailPlay">
+        <svg class="td-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="td-icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        <span id="trackDetailPlayLabel">Play</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ VIDEOS & PHOTOS ============ -->
+<section id="videos">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">04 — Media</span>
+      <h2>Videos &amp; Photos</h2>
+    </div>
+    <div class="media-slider reveal">
+      <!-- Replace each .video-card with an <iframe> embed (e.g. YouTube/Vimeo) when ready -->
+      <!-- Replace each .photo-card with an <img> tag when ready -->
+      <div class="media-viewport">
+        <div class="media-track" id="mediaTrack">
+          <div class="media-slide">
+            <div class="video-card">
+              <div class="vplay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <span class="video-label">Live Session — Static Bloom</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="photo-card">
+              <div class="pcam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>
+              <span class="video-label">Studio — Wide Shot</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="video-card">
+              <div class="vplay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <span class="video-label">Studio Process — Rust &amp; Repeat</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="photo-card">
+              <div class="pcam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>
+              <span class="video-label">Mix Session — Close Up</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="video-card">
+              <div class="vplay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <span class="video-label">Score Reel 2025</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="photo-card">
+              <div class="pcam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>
+              <span class="video-label">Console, Late Night</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="video-card">
+              <div class="vplay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <span class="video-label">Behind the Sound Design</span>
+            </div>
+          </div>
+          <div class="media-slide">
+            <div class="photo-card">
+              <div class="pcam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>
+              <span class="video-label">On Location</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="media-arrow prev" id="mediaPrev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="media-arrow next" id="mediaNext" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="media-dots" id="mediaDots"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">05 — Get In Touch</span>
+      <h2>Booking &amp; Contact</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <p>Open for film scoring, production collaborations and licensing inquiries. Based in the studio, working worldwide.</p>
+        <div class="contact-links">
+          <a href="mailto:miguelandri.management@gmail.com">Email <span>miguelandri.management@gmail.com</span></a>
+          <a href="https://www.instagram.com/wguimell/" target="_blank" rel="noopener">Instagram <span>@wguimell</span></a>
+        </div>
+      </div>
+      <form class="reveal" id="contactForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Send Message</button>
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-mark">MIGUEL<span>ANDRI</span></div>
+    <div class="footer-year">&copy; 2026 — All rights reserved</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Track play/pause toggle, with real audio-reactive bars once a real <audio src> is set.
+  // Falls back to the canned eq1–eq4 animation for tracks with no audio loaded (e.g. this demo).
+  const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+  let sharedAudioCtx = null;
+  const analyserRigs = new WeakMap(); // track -> { analyser, data, bars }
+  let rafId = null;
+
+  function getAudioCtx(){
+    if(!sharedAudioCtx && AudioCtxClass) sharedAudioCtx = new AudioCtxClass();
+    return sharedAudioCtx;
+  }
+
+  function setupAnalyser(track, audio){
+    if(analyserRigs.has(track)) return analyserRigs.get(track);
+    const ctx = getAudioCtx();
+    if(!ctx) return null;
+    try{
+      const source = ctx.createMediaElementSource(audio);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 64;
+      analyser.smoothingTimeConstant = 0.75;
+      source.connect(analyser);
+      analyser.connect(ctx.destination);
+      const rig = {
+        analyser,
+        data: new Uint8Array(analyser.frequencyBinCount),
+        bars: Array.from(track.querySelectorAll('.track-bars i'))
+      };
+      analyserRigs.set(track, rig);
+      return rig;
+    }catch(err){
+      return null; // e.g. no valid src yet — falls back to CSS animation
+    }
+  }
+
+  function animateBars(){
+    const playingTrack = document.querySelector('.track.playing');
+    if(!playingTrack){ rafId = null; return; }
+    const rig = analyserRigs.get(playingTrack);
+    if(rig){
+      rig.analyser.getByteFrequencyData(rig.data);
+      // group frequency bins into 4 bands (bass to treble) so each bar reflects a different range
+      const bandSize = Math.floor(rig.data.length / 4);
+      let hasSignal = false;
+      rig.bars.forEach((bar, i) => {
+        const start = i * bandSize;
+        let sum = 0;
+        for(let j = start; j < start + bandSize; j++) sum += rig.data[j];
+        const avg = sum / bandSize;
+        if(avg > 4) hasSignal = true;
+        const height = 5 + (avg / 255) * 24; // map 0-255 amplitude to 5px-29px bar height
+        bar.style.height = height + 'px';
+      });
+      playingTrack.classList.toggle('audio-reactive', hasSignal);
+    }
+    rafId = requestAnimationFrame(animateBars);
+  }
+
+  document.querySelectorAll('.track').forEach(track => {
+    const audio = track.querySelector('audio');
+    track.addEventListener('click', () => {
+      const wasPlaying = track.classList.contains('playing');
+      document.querySelectorAll('.track').forEach(t => {
+        t.classList.remove('playing', 'audio-reactive');
+        const a = t.querySelector('audio');
+        if (a && !a.paused) a.pause();
+        t.querySelectorAll('.track-bars i').forEach(bar => { bar.style.height = ''; });
+      });
+      if (!wasPlaying) {
+        track.classList.add('playing');
+        if (audio && audio.src) {
+          const ctx = getAudioCtx();
+          if(ctx && ctx.state === 'suspended') ctx.resume();
+          setupAnalyser(track, audio);
+          audio.play().catch(()=>{});
+          if(!rafId) rafId = requestAnimationFrame(animateBars);
+        }
+      }
+    });
+  });
+
+  // Videos & Photos slider — uses native scroll-snap, so trackpad/touch swiping
+  // is handled entirely by the browser (smooth and lag-free) instead of custom JS.
+  const mediaViewport = document.querySelector('.media-viewport');
+  const mediaTrack = document.getElementById('mediaTrack');
+  const mediaSlides = Array.from(mediaTrack.children);
+  const mediaPrev = document.getElementById('mediaPrev');
+  const mediaNext = document.getElementById('mediaNext');
+  const mediaDots = document.getElementById('mediaDots');
+  let mediaIndex = 0;
+
+  mediaSlides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    if(i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => scrollToSlide(i));
+    mediaDots.appendChild(dot);
+  });
+  const mediaDotEls = Array.from(mediaDots.children);
+
+  function scrollToSlide(i){
+    mediaIndex = (i + mediaSlides.length) % mediaSlides.length;
+    mediaViewport.scrollTo({ left: mediaIndex * mediaViewport.clientWidth, behavior: 'smooth' });
+  }
+  mediaPrev.addEventListener('click', () => scrollToSlide(mediaIndex - 1));
+  mediaNext.addEventListener('click', () => scrollToSlide(mediaIndex + 1));
+
+  // Keep the dots and index in sync whenever the user scrolls/swipes the viewport directly
+  let scrollSyncTimer = null;
+  mediaViewport.addEventListener('scroll', () => {
+    clearTimeout(scrollSyncTimer);
+    scrollSyncTimer = setTimeout(() => {
+      mediaIndex = Math.round(mediaViewport.scrollLeft / mediaViewport.clientWidth);
+      mediaDotEls.forEach((d, i) => d.classList.toggle('active', i === mediaIndex));
+    }, 80);
+  }, { passive: true });
+
+  // Full portfolio cover squares — click opens a dedicated detail page for that track
+  const trackDetailPage = document.getElementById('trackDetailPage');
+  const trackDetailBack = document.getElementById('trackDetailBack');
+  const trackDetailArt = document.getElementById('trackDetailArt');
+  const trackDetailTag = document.getElementById('trackDetailTag');
+  const trackDetailTitle = document.getElementById('trackDetailTitle');
+  const trackDetailArtist = document.getElementById('trackDetailArtist');
+  const trackDetailDesc = document.getElementById('trackDetailDesc');
+  const trackDetailProduced = document.getElementById('trackDetailProduced');
+  const trackDetailMixed = document.getElementById('trackDetailMixed');
+  const trackDetailMastered = document.getElementById('trackDetailMastered');
+  const trackDetailDur = document.getElementById('trackDetailDur');
+  const trackDetailPlay = document.getElementById('trackDetailPlay');
+  const trackDetailPlayLabel = document.getElementById('trackDetailPlayLabel');
+  let activeDetailAudio = null;
+
+  function stopEverythingPlaying(){
+    document.querySelectorAll('.portfolio-cover.playing').forEach(c => {
+      c.classList.remove('playing');
+      const a = c.querySelector('audio');
+      if (a && !a.paused) a.pause();
+    });
+    document.querySelectorAll('.track.playing').forEach(t => {
+      t.classList.remove('playing', 'audio-reactive');
+      const a = t.querySelector('audio');
+      if (a && !a.paused) a.pause();
+      t.querySelectorAll('.track-bars i').forEach(bar => { bar.style.height = ''; });
+    });
+  }
+
+  document.querySelectorAll('.portfolio-cover').forEach(cover => {
+    cover.addEventListener('click', () => {
+      const d = cover.dataset;
+      trackDetailArt.className = 'track-detail-art ' + d.art;
+      trackDetailTag.textContent = d.tag;
+      trackDetailTitle.textContent = d.title;
+      trackDetailArtist.textContent = d.artist;
+      trackDetailDesc.textContent = d.desc;
+      trackDetailProduced.textContent = d.produced;
+      trackDetailMixed.textContent = d.mixed;
+      trackDetailMastered.textContent = d.mastered;
+      trackDetailDur.textContent = d.dur;
+
+      activeDetailAudio = cover.querySelector('audio');
+      trackDetailPlay.classList.toggle('playing', cover.classList.contains('playing'));
+      trackDetailPlayLabel.textContent = cover.classList.contains('playing') ? 'Pause' : 'Play';
+
+      trackDetailPage.classList.add('open');
+      trackDetailPage.setAttribute('aria-hidden', 'false');
+      trackDetailPage.scrollTo({ top: 0 });
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeTrackDetail(){
+    trackDetailPage.classList.remove('open');
+    trackDetailPage.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = portfolioDrawer.classList.contains('open') ? 'hidden' : '';
+  }
+  trackDetailBack.addEventListener('click', closeTrackDetail);
+
+  trackDetailPlay.addEventListener('click', () => {
+    if(!activeDetailAudio) return;
+    const cover = activeDetailAudio.closest('.portfolio-cover');
+    const isPlaying = cover.classList.contains('playing');
+    stopEverythingPlaying();
+    if(!isPlaying){
+      cover.classList.add('playing');
+      if(activeDetailAudio.src) activeDetailAudio.play().catch(()=>{});
+      trackDetailPlay.classList.add('playing');
+      trackDetailPlayLabel.textContent = 'Pause';
+    } else {
+      trackDetailPlay.classList.remove('playing');
+      trackDetailPlayLabel.textContent = 'Play';
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && trackDetailPage.classList.contains('open')) closeTrackDetail();
+  });
+
+  // Full portfolio slide-in drawer
+  const portfolioDrawer = document.getElementById('portfolioDrawer');
+  const portfolioBackdrop = document.getElementById('portfolioBackdrop');
+  const openPortfolioBtn = document.getElementById('openPortfolioBtn');
+  const closePortfolioBtn = document.getElementById('closePortfolioBtn');
+
+  function openPortfolioDrawer(){
+    portfolioDrawer.classList.add('open');
+    portfolioBackdrop.classList.add('open');
+    portfolioDrawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePortfolioDrawer(){
+    portfolioDrawer.classList.remove('open');
+    portfolioBackdrop.classList.remove('open');
+    portfolioDrawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  openPortfolioBtn.addEventListener('click', openPortfolioDrawer);
+  closePortfolioBtn.addEventListener('click', closePortfolioDrawer);
+  portfolioBackdrop.addEventListener('click', closePortfolioDrawer);
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && portfolioDrawer.classList.contains('open')) closePortfolioDrawer();
+  });
+
+  // Nav toolbar — click to jump to a section; scroll-spy highlights the current one
+  const toolbarButtons = Array.from(document.querySelectorAll('.nav-toolbar button[data-target]'));
+  const targetSections = toolbarButtons
+    .map(btn => document.getElementById(btn.dataset.target))
+    .filter(Boolean);
+  let toolbarScrollLock = false;
+  let toolbarScrollTimer = null;
+
+  toolbarButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      toolbarButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      toolbarScrollLock = true;
+      clearTimeout(toolbarScrollTimer);
+      if(target) target.scrollIntoView({ behavior: 'smooth' });
+      toolbarScrollTimer = setTimeout(() => { toolbarScrollLock = false; }, 900);
+    });
+  });
+
+  const spy = new IntersectionObserver((entries) => {
+    if(toolbarScrollLock) return;
+    entries.forEach(entry => {
+      const btn = toolbarButtons.find(b => b.dataset.target === entry.target.id);
+      if(!btn) return;
+      if(entry.isIntersecting){
+        toolbarButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+  }, { threshold: 0, rootMargin: '-45% 0px -50% 0px' });
+
+  targetSections.forEach(sec => spy.observe(sec));
+
+  // Contact form (front-end only demo — connect to a real form service, e.g. Formspree, to receive messages)
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    document.getElementById('formMsg').textContent = 'Message sent — thank you. I\'ll be in touch soon.';
+    this.reset();
+  });
+</script>
+
+</body>
+</html>
